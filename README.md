@@ -3,6 +3,8 @@
 一个给辩手自己用的**离线**比赛记录程序：记比赛、看胜率、翻日历、攒履历、换皮肤。
 Windows 桌面应用（Electron + React + TypeScript + SQLite），**不联网、不登录、没有手机端**，所有数据只存在你自己电脑上的一个文件夹里。
 
+▶ **演示视频**（1080p，2 分 05 秒）：[debate-notes-1.0.0-demo.mp4](https://github.com/shisisishi/debate-notes/releases/download/v1.0.0/debate-notes-1.0.0-demo.mp4) · [封面图](https://github.com/shisisishi/debate-notes/releases/download/v1.0.0/debate-notes-1.0.0-cover.png)
+
 ![战绩总览](docs/screenshots/界面/01-战绩总览.png)
 
 ## 功能
