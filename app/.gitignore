@@ -1,0 +1,22 @@
+# 依赖与构建产物
+node_modules/
+out/
+dist/
+
+# 本地缓存与临时数据
+.npm-cache/
+.smoke-data/
+.smoke-extract/
+.e2e-data/
+.e2e-tmp/
+.e2e-tmp-samples/
+.demo-data/
+.pkg-check-data/
+.pkg-check-tmp/
+.pkg-check-shots/
+.portable-check/
+.install-check/
+.probe-shots/
+test-results/
+playwright-report/
+*.log

@@ -1,0 +1,32 @@
+# 依赖与构建产物
+app/node_modules/
+app/out/
+app/dist/
+app/.npm-cache/
+
+# 本地数据与测试/工具临时目录
+app/.demo-data/
+app/.shots-photos/
+app/.e2e-data/
+app/.e2e-tmp/
+app/.e2e-tmp-*/
+app/.pkg-check-*/
+app/.portable-check-data/
+app/.upgrade-check/
+app/test-results/
+app/playwright-report/
+app/*.log
+app/.env*
+
+# 个人素材与本地交付物：不发布
+sources/*.jpg
+sources/*.jpeg
+sources/*.png
+sources/*.gif
+sources/*.tif
+sources/*.tiff
+sources/*.heic
+docs/screenshots/验收/
+交付/
+app/*.tsbuildinfo
+

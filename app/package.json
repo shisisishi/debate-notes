@@ -1,0 +1,100 @@
+{
+  "name": "debate-notes",
+  "version": "1.0.0",
+  "description": "辩论手记 — 个人辩论记录桌面程序",
+  "main": "./out/main/index.js",
+  "author": "personal",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck:node": "tsc -p tsconfig.node.json --noEmit",
+    "typecheck:web": "tsc -p tsconfig.web.json --noEmit",
+    "typecheck:e2e": "tsc -p tsconfig.e2e.json --noEmit",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web && npm run typecheck:e2e",
+    "icon": "node tools/make-icon.mjs",
+    "sample-photos": "node tools/sample-photos.mjs",
+    "shots": "node tools/shots.mjs",
+    "dist": "electron-vite build && electron-builder --win nsis portable --publish never",
+    "dist:dir": "electron-vite build && electron-builder --win --dir --publish never",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "build": {
+    "appId": "personal.debate-notes",
+    "productName": "辩论手记",
+    "copyright": "个人使用",
+    "asar": true,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../sources",
+        "to": "seed-photos",
+        "filter": [
+          "*.jpg",
+          "*.jpeg",
+          "*.png",
+          "*.webp",
+          "*.gif",
+          "*.bmp",
+          "*.avif"
+        ]
+      }
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "辩论手记",
+      "uninstallDisplayName": "辩论手记 ${version}",
+      "artifactName": "辩论手记-安装版-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "辩论手记-免安装版-${version}.${ext}"
+    }
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "electron": "^44.3.0",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.6"
+  }
+}
