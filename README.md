@@ -36,12 +36,14 @@ Windows 桌面应用（Electron + React + TypeScript + SQLite），**不联网�
 
 ## 下载
 
-到 [Releases](https://github.com/shisisishi/debate-notes/releases) 里下载 `1.0.0`：
+到 [Releases](https://github.com/shisisishi/debate-notes/releases) 下载最新版（`1.0.0`）：
 
-- `辩论手记-安装版-1.0.0.exe`：安装版（可选安装位置，生成开始菜单与桌面快捷方式，可从「应用和功能」卸载；**卸载不会删除你的数据**）
-- `辩论手记-免安装版-1.0.0.exe`：免安装版，双击即用，适合放 U 盘
+- **`debate-notes-1.0.0-setup.exe`**（安装版）：可选安装位置，创建开始菜单与桌面快捷方式，可从「应用和功能」卸载（**卸载不会删除你的数据**）
+- **`debate-notes-1.0.0-portable.exe`**（免安装版）：双击即用，适合放 U 盘
 
-系统要求：Windows 10 / 11 64 位。
+文件名是英文，装好之后程序名与快捷方式都是「辩论手记」。系统要求：Windows 10 / 11 64 位。
+
+程序没有代码签名证书，首次运行如果出现 SmartScreen 提示（「Windows 已保护你的电脑」），点「更多信息 → 仍要运行」即可。
 
 ## 数据放在哪
 
