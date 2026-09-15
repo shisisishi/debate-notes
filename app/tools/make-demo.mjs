@@ -25,6 +25,7 @@ const ROOT = path.resolve(APP_ROOT, '..')
 const FFMPEG = process.env.FFMPEG || 'ffmpeg'
 const WORK = path.join(APP_ROOT, '.demo-video')
 const RAW = path.join(WORK, 'raw.mp4')
+const SCALED = path.join(WORK, 'scaled.mp4')
 const BODY = path.join(WORK, 'body.mp4')
 const BODY_CURSOR = path.join(WORK, 'body-cursor.mp4')
 const DEMO_DATA = path.join(APP_ROOT, '.demo-data')
@@ -201,6 +202,11 @@ async function waitForFirstFrame(proc) {
 
 /* --------------------------------------------------------------- 界面流程 */
 
+const CHAPTERS = {
+  '四套皮肤随时换，只改配色，不改布局和数据': '四套皮肤',
+  '每天自动备份成 zip，可导出 / 恢复；数据目录还能搬到 D 盘': '自动备份与数据目录'
+}
+
 async function runDemo(app, page, cursor, region, sink) {
   const t0 = Date.now()
   const clock = () => (Date.now() - t0) / 1000
@@ -213,7 +219,7 @@ async function runDemo(app, page, cursor, region, sink) {
     const start = clock()
     log(`  ▶ ${text}`)
     await fn()
-    caps.push({ text, start, end: clock() })
+    caps.push({ text, chapter: CHAPTERS[text] || text.split('：')[0], start, end: clock() })
     sink.caps = caps // 中途失败也能保住已录到的字幕时间轴
     sink.duration = clock()
   }
@@ -430,12 +436,30 @@ function rawDuration() {
   return Number(m[1]) * 3600 + Number(m[2]) * 60 + Number(m[3])
 }
 
-/** 正片第一步：缩放 + 字幕叠加 */
+/** 正片第一步：先把录制缩放到 1080p（分开做，避免大尺寸滤镜图拖慢后面每一次叠加） */
+function encodeScaled() {
+  run(
+    [
+      '-hide_banner',
+      '-i', RAW,
+      '-vf', `scale=${W}:${H}:flags=lanczos,fps=${FPS}`,
+      '-r', String(FPS),
+      '-c:v', 'libx264',
+      '-preset', 'veryfast',
+      '-crf', '14',
+      '-pix_fmt', 'yuv420p',
+      '-y', SCALED
+    ],
+    '缩放录制'
+  )
+}
+
+/** 正片第二步：叠加字幕 */
 function encodeBody(caps, duration) {
-  const inputs = ['-i', RAW]
+  const inputs = ['-i', SCALED]
   caps.forEach((c, i) => inputs.push('-loop', '1', '-i', path.join(WORK, `cap-${i}.png`)))
 
-  const filters = [`[0:v]scale=${W}:${H}:flags=lanczos,fps=${FPS},format=yuv420p[base]`]
+  const filters = [`[0:v]format=yuv420p[base]`]
   let last = 'base'
   caps.forEach((c, i) => {
     const s = Math.max(0, c.start - 0.15)
@@ -460,8 +484,8 @@ function encodeBody(caps, duration) {
       '-t', duration.toFixed(2),
       '-r', String(FPS),
       '-c:v', 'libx264',
-      '-preset', 'medium',
-      '-crf', '20',
+      '-preset', 'veryfast',
+      '-crf', '14',
       '-pix_fmt', 'yuv420p',
       '-y', BODY
     ],
@@ -500,8 +524,8 @@ function addCursor(trail, clicks, duration, region) {
       '-t', duration.toFixed(2),
       '-r', String(FPS),
       '-c:v', 'libx264',
-      '-preset', 'medium',
-      '-crf', '20',
+      '-preset', 'veryfast',
+      '-crf', '14',
       '-pix_fmt', 'yuv420p',
       '-y', BODY_CURSOR
     ],
@@ -519,8 +543,8 @@ function encodeCard(png, seconds, out) {
       '-r', String(FPS),
       '-vf', `scale=${W}:${H},format=yuv420p,fade=t=in:st=0:d=0.5,fade=t=out:st=${(seconds - 0.6).toFixed(2)}:d=0.6`,
       '-c:v', 'libx264',
-      '-preset', 'medium',
-      '-crf', '20',
+      '-preset', 'veryfast',
+      '-crf', '14',
       '-pix_fmt', 'yuv420p',
       '-y', out
     ],
@@ -550,8 +574,8 @@ function concatParts() {
       '-map', '1:a',
       '-shortest',
       '-c:v', 'libx264',
-      '-preset', 'medium',
-      '-crf', '20',
+      '-preset', 'veryfast',
+      '-crf', '14',
       '-pix_fmt', 'yuv420p',
       '-r', String(FPS),
       '-c:a', 'aac',
@@ -577,7 +601,7 @@ function hhmmss(sec) {
 
 function writeUploadKit(caps, finalDuration) {
   const lead = 4.5 // 片头标题卡
-  const chapterLines = caps.map((c) => `${hhmmss(lead + c.start)} ${c.text.split('：')[0]}`)
+  const chapterLines = ['00:00 开场'].concat(caps.map((c) => `${hhmmss(lead + c.start)} ${c.chapter || c.text}`))
   const body = `# B 站投稿文案（辩论手记演示视频）
 
 ## 推荐标题（挑一个）
@@ -738,6 +762,8 @@ async function main() {
   log('生成标题卡、字幕与光标图形…')
   renderOverlays(buildOverlaySpec(caps))
 
+  log('缩放录制到 1080p…')
+  encodeScaled()
   log('合成正片（字幕）…')
   encodeBody(caps, duration)
   log('叠加光标轨迹…')
