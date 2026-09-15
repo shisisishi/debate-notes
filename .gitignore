@@ -6,6 +6,8 @@ app/.npm-cache/
 
 # 本地数据与测试/工具临时目录
 app/.demo-data/
+app/.demo-video/
+app/.demo-video-data/
 app/.shots-photos/
 app/.e2e-data/
 app/.e2e-tmp/

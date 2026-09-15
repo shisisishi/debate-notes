@@ -17,6 +17,7 @@
     "icon": "node tools/make-icon.mjs",
     "sample-photos": "node tools/sample-photos.mjs",
     "shots": "node tools/shots.mjs",
+    "demo": "node tools/make-demo.mjs",
     "dist": "electron-vite build && electron-builder --win nsis portable --publish never",
     "dist:dir": "electron-vite build && electron-builder --win --dir --publish never",
     "test:e2e": "playwright test"
