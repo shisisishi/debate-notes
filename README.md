@@ -108,3 +108,10 @@ sources/            示例照片来源目录（只有说明文件，个人照片
 ## 说明
 
 个人自用项目，没有指定开源许可证（默认保留所有权利）；代码可以看，请勿直接当作自己的作品发布。有问题欢迎开 Issue。
+
+## 作者的其他项目
+
+- **[stm32-learning-notes](https://github.com/shisisishi/stm32-learning-notes)**
+  —— 从零开始的 STM32 嵌入式学习笔记：电路基础 + 电控外设（GPIO/定时器/串口/I2C/ADC）+ PID 控制。
+  含可编译运行的纯 C 仿真代码与实验数据。
+- 个人主页：[@shisisishi](https://github.com/shisisishi)
